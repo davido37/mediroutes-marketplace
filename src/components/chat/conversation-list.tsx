@@ -12,6 +12,7 @@ interface ConversationListProps {
   onSelectConversation: (id: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onCompose?: () => void;
 }
 
 const FILTER_TABS = [
@@ -28,6 +29,7 @@ export function ConversationList({
   onSelectConversation,
   searchQuery,
   onSearchChange,
+  onCompose,
 }: ConversationListProps) {
   const [activeTab, setActiveTab] = useState("all");
 
@@ -55,12 +57,27 @@ export function ConversationList({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-3 pt-3 pb-2">
-        <SearchInput
-          value={searchQuery}
-          onChange={onSearchChange}
-          placeholder="Search conversations..."
-        />
+      <div className="px-3 pt-3 pb-2 space-y-2">
+        <div className="flex items-center gap-2">
+          <SearchInput
+            value={searchQuery}
+            onChange={onSearchChange}
+            placeholder="Search conversations..."
+            className="flex-1"
+          />
+          {onCompose && (
+            <button
+              onClick={onCompose}
+              className="flex h-[38px] items-center gap-1.5 shrink-0 rounded-lg bg-accent px-3 text-sm font-medium text-white hover:bg-accent-light transition-colors"
+              title="New message"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="hidden sm:inline">New</span>
+            </button>
+          )}
+        </div>
       </div>
       <Tabs tabs={tabsWithBadges} activeTab={activeTab} onChange={setActiveTab} className="px-1" />
       <div className="flex-1 overflow-y-auto">

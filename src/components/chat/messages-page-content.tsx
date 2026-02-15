@@ -6,13 +6,16 @@ import { useAppContext } from "@/hooks/use-app-context";
 import { PageHeader } from "@/components/common/page-header";
 import { ConversationList } from "./conversation-list";
 import { ConversationView } from "./conversation-view";
+import { ComposeView } from "./compose-view";
 import { EmptyState } from "@/components/common/empty-state";
+import type { ChatParticipant } from "@/lib/chat-types";
 
 export function MessagesPageContent() {
-  const { state: chatState, dispatch: chatDispatch, getConversationsForRole, sendMessage } = useChatContext();
+  const { state: chatState, dispatch: chatDispatch, getConversationsForRole, sendMessage, createConversation } = useChatContext();
   const { state: appState } = useAppContext();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [composing, setComposing] = useState(false);
 
   const roleConversations = getConversationsForRole(appState.activeRole);
   const selectedConversation = selectedId ? roleConversations.find((c) => c.id === selectedId) ?? null : null;
@@ -28,6 +31,16 @@ export function MessagesPageContent() {
     sendMessage(selectedId, content, appState.currentUser.id, appState.currentUser.name, appState.activeRole);
   };
 
+  const handleComposeSend = (recipient: ChatParticipant, message: string) => {
+    const newId = createConversation(
+      recipient,
+      message,
+      { id: appState.currentUser.id, name: appState.currentUser.name, role: appState.activeRole, orgName: appState.currentUser.orgName }
+    );
+    setComposing(false);
+    setSelectedId(newId);
+  };
+
   return (
     <div>
       <PageHeader
@@ -41,15 +54,22 @@ export function MessagesPageContent() {
           <ConversationList
             conversations={roleConversations}
             activeConversationId={selectedId}
-            onSelectConversation={handleSelectConversation}
+            onSelectConversation={(id) => { setComposing(false); handleSelectConversation(id); }}
             searchQuery={search}
             onSearchChange={setSearch}
+            onCompose={() => { setSelectedId(null); setComposing(true); }}
           />
         </div>
 
         {/* Right: Conversation View or Empty */}
-        <div className={`flex-1 flex flex-col ${selectedConversation ? "flex" : "hidden md:flex"}`}>
-          {selectedConversation ? (
+        <div className={`flex-1 flex flex-col ${selectedConversation || composing ? "flex" : "hidden md:flex"}`}>
+          {composing ? (
+            <ComposeView
+              currentUserId={appState.currentUser.id}
+              onSend={handleComposeSend}
+              onCancel={() => setComposing(false)}
+            />
+          ) : selectedConversation ? (
             <>
               {/* Mobile back button */}
               <div className="md:hidden flex items-center gap-2 border-b border-border px-3 py-2">
@@ -75,7 +95,7 @@ export function MessagesPageContent() {
             <EmptyState
               icon="💬"
               title="Select a conversation"
-              description="Choose a conversation from the list to view messages"
+              description="Choose a conversation from the list to view messages, or click New to start one"
             />
           )}
         </div>

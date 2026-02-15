@@ -45,6 +45,16 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       };
     }
 
+    case "CREATE_CONVERSATION": {
+      const { conversation, message } = action.payload;
+      return {
+        ...state,
+        conversations: [conversation, ...state.conversations],
+        messages: { ...state.messages, [conversation.id]: [message] },
+        activeConversationId: conversation.id,
+      };
+    }
+
     case "MARK_CONVERSATION_READ": {
       const updatedConversations = state.conversations.map((c) =>
         c.id === action.payload ? { ...c, unreadCount: 0 } : c
@@ -83,6 +93,7 @@ interface ChatContextValue {
   getUnreadCountForRole: (role: UserRole) => number;
   getConversationsForTrip: (tripId: string) => Conversation[];
   sendMessage: (conversationId: string, content: string, senderId: string, senderName: string, senderRole: UserRole) => void;
+  createConversation: (recipient: { userId: string; name: string; role: UserRole; orgName: string }, firstMessage: string, sender: { id: string; name: string; role: UserRole; orgName: string }) => string;
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
@@ -131,9 +142,45 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const createConversation = useCallback(
+    (recipient: { userId: string; name: string; role: UserRole; orgName: string }, firstMessage: string, sender: { id: string; name: string; role: UserRole; orgName: string }): string => {
+      const convId = `conv-${Date.now()}`;
+      const now = new Date().toISOString();
+      const visibleRoles: UserRole[] = Array.from(new Set([sender.role, recipient.role]));
+      const conversation: Conversation = {
+        id: convId,
+        type: sender.role === recipient.role ? "direct" : "cross_org",
+        title: recipient.name,
+        participants: [
+          { userId: sender.id, name: sender.name, role: sender.role, orgName: sender.orgName },
+          { userId: recipient.userId, name: recipient.name, role: recipient.role, orgName: recipient.orgName },
+        ],
+        visibleToRoles: visibleRoles,
+        isBroadcast: false,
+        unreadCount: 0,
+        lastMessagePreview: firstMessage,
+        lastMessageTime: now,
+      };
+      const message: ChatMessage = {
+        id: `msg-${Date.now()}`,
+        conversationId: convId,
+        senderId: sender.id,
+        senderName: sender.name,
+        senderRole: sender.role,
+        content: firstMessage,
+        timestamp: now,
+        type: "text",
+        tripReferences: [],
+      };
+      dispatch({ type: "CREATE_CONVERSATION", payload: { conversation, message } });
+      return convId;
+    },
+    []
+  );
+
   return (
     <ChatContext.Provider
-      value={{ state, dispatch, getConversationsForRole, getUnreadCountForRole, getConversationsForTrip, sendMessage }}
+      value={{ state, dispatch, getConversationsForRole, getUnreadCountForRole, getConversationsForTrip, sendMessage, createConversation }}
     >
       {children}
     </ChatContext.Provider>

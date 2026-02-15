@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useChatContext } from "@/hooks/use-chat-context";
 import { useAppContext } from "@/hooks/use-app-context";
 import { ConversationList } from "./conversation-list";
 import { ConversationView } from "./conversation-view";
+import { ComposeView } from "./compose-view";
+import type { ChatParticipant } from "@/lib/chat-types";
 
 export function ChatDrawer() {
-  const { state: chatState, dispatch: chatDispatch, getConversationsForRole, sendMessage } = useChatContext();
+  const { state: chatState, dispatch: chatDispatch, getConversationsForRole, sendMessage, createConversation } = useChatContext();
   const { state: appState } = useAppContext();
   const router = useRouter();
   const drawerRef = useRef<HTMLDivElement>(null);
+  const [composing, setComposing] = useState(false);
 
   const roleConversations = getConversationsForRole(appState.activeRole);
   const activeConversation = chatState.activeConversationId
@@ -70,6 +73,15 @@ export function ChatDrawer() {
     );
   };
 
+  const handleComposeSend = (recipient: ChatParticipant, message: string) => {
+    createConversation(
+      recipient,
+      message,
+      { id: appState.currentUser.id, name: appState.currentUser.name, role: appState.activeRole, orgName: appState.currentUser.orgName }
+    );
+    setComposing(false);
+  };
+
   const handleExpandToFullPage = () => {
     chatDispatch({ type: "CLOSE_DRAWER" });
     router.push(`/${appState.activeRole}/messages`);
@@ -84,9 +96,12 @@ export function ChatDrawer() {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3 shrink-0">
         <div className="flex items-center gap-2">
-          {activeConversation && (
+          {(activeConversation || composing) && (
             <button
-              onClick={() => chatDispatch({ type: "SET_ACTIVE_CONVERSATION", payload: null })}
+              onClick={() => {
+                if (composing) setComposing(false);
+                else chatDispatch({ type: "SET_ACTIVE_CONVERSATION", payload: null });
+              }}
               className="flex items-center justify-center h-7 w-7 rounded-lg text-text-muted hover:bg-surface-muted transition-colors"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -95,7 +110,7 @@ export function ChatDrawer() {
             </button>
           )}
           <h2 className="text-sm font-semibold text-text-primary truncate">
-            {activeConversation ? activeConversation.title : "Messages"}
+            {composing ? "New Message" : activeConversation ? activeConversation.title : "Messages"}
           </h2>
         </div>
         <div className="flex items-center gap-1">
@@ -121,7 +136,13 @@ export function ChatDrawer() {
 
       {/* Body */}
       <div className="flex-1 overflow-hidden">
-        {activeConversation ? (
+        {composing ? (
+          <ComposeView
+            currentUserId={appState.currentUser.id}
+            onSend={handleComposeSend}
+            onCancel={() => setComposing(false)}
+          />
+        ) : activeConversation ? (
           <ConversationView
             conversation={activeConversation}
             messages={activeMessages}
@@ -135,6 +156,7 @@ export function ChatDrawer() {
             onSelectConversation={handleSelectConversation}
             searchQuery={chatState.searchQuery}
             onSearchChange={(q) => chatDispatch({ type: "SET_SEARCH_QUERY", payload: q })}
+            onCompose={() => setComposing(true)}
           />
         )}
       </div>

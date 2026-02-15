@@ -64,5 +64,6 @@ export type ChatAction =
   | { type: "TOGGLE_DRAWER" }
   | { type: "SET_ACTIVE_CONVERSATION"; payload: string | null }
   | { type: "SEND_MESSAGE"; payload: { conversationId: string; message: ChatMessage } }
+  | { type: "CREATE_CONVERSATION"; payload: { conversation: Conversation; message: ChatMessage } }
   | { type: "MARK_CONVERSATION_READ"; payload: string }
   | { type: "SET_SEARCH_QUERY"; payload: string };
