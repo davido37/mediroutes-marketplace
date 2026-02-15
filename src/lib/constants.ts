@@ -92,6 +92,7 @@ export const NAV_ITEMS: Record<UserRole, NavItem[]> = {
     { label: 'Active Trips', path: '/facility/trips', icon: '🚗' },
     { label: 'EHR Discharge', path: '/facility/ehr', icon: '🏥' },
     { label: 'Tracking', path: '/facility/tracking', icon: '📍' },
+    { label: 'Messages', path: '/facility/messages', icon: '💬' },
   ],
   healthplan: [
     { label: 'Dashboard', path: '/healthplan/dashboard', icon: '📊' },
@@ -99,6 +100,7 @@ export const NAV_ITEMS: Record<UserRole, NavItem[]> = {
     { label: 'Authorizations', path: '/healthplan/authorizations', icon: '✅' },
     { label: 'Analytics', path: '/healthplan/analytics', icon: '📈' },
     { label: 'Members', path: '/healthplan/members', icon: '👥' },
+    { label: 'Messages', path: '/healthplan/messages', icon: '💬' },
   ],
   broker: [
     { label: 'Dashboard', path: '/broker/dashboard', icon: '📊' },
@@ -106,6 +108,7 @@ export const NAV_ITEMS: Record<UserRole, NavItem[]> = {
     { label: 'Providers', path: '/broker/providers', icon: '🚐' },
     { label: 'Compliance', path: '/broker/compliance', icon: '🛡️' },
     { label: 'Claims', path: '/broker/claims', icon: '💰' },
+    { label: 'Messages', path: '/broker/messages', icon: '💬' },
   ],
   provider: [
     { label: 'Dashboard', path: '/provider/dashboard', icon: '📊' },
@@ -116,6 +119,7 @@ export const NAV_ITEMS: Record<UserRole, NavItem[]> = {
     { label: 'Trips', path: '/provider/trips', icon: '🚗' },
     { label: 'Costing', path: '/provider/costing', icon: '💲' },
     { label: 'Priority Rules', path: '/provider/priority', icon: '⚙️' },
+    { label: 'Messages', path: '/provider/messages', icon: '💬' },
   ],
   marketplace: [
     { label: 'Dashboard', path: '/marketplace/dashboard', icon: '📊' },
@@ -126,6 +130,7 @@ export const NAV_ITEMS: Record<UserRole, NavItem[]> = {
     { label: 'Providers', path: '/marketplace/providers', icon: '🚐' },
     { label: 'Notifications', path: '/marketplace/notifications', icon: '🔔' },
     { label: 'Settlement', path: '/marketplace/settlement', icon: '💰' },
+    { label: 'Messages', path: '/marketplace/messages', icon: '💬' },
   ],
   passenger: [
     { label: 'Home', path: '/passenger', icon: '🏠' },
@@ -134,6 +139,7 @@ export const NAV_ITEMS: Record<UserRole, NavItem[]> = {
     { label: 'Recurring', path: '/passenger/recurring', icon: '🔄' },
     { label: 'Profile', path: '/passenger/profile', icon: '👤' },
     { label: 'Eligibility', path: '/passenger/eligibility', icon: '✅' },
+    { label: 'Messages', path: '/passenger/messages', icon: '💬' },
   ],
 };
 

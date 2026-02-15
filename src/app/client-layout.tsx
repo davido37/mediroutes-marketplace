@@ -1,9 +1,12 @@
 "use client";
 
 import { AppProvider, useAppContext } from "@/hooks/use-app-context";
+import { ChatProvider } from "@/hooks/use-chat-context";
 import { RoleSwitcher } from "@/components/common/role-switcher";
 import { SidebarNav } from "@/components/common/sidebar-nav";
 import { NotificationBell } from "@/components/common/notification-bell";
+import { ChatHeaderButton } from "@/components/chat/chat-header-button";
+import { ChatDrawer } from "@/components/chat/chat-drawer";
 import { VendorLogo } from "@/components/common/vendor-logo";
 import { useDemoAuth } from "@/hooks/use-demo-auth";
 import { LandingPage } from "@/components/landing-page";
@@ -20,7 +23,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <AppProvider>
-      <AppShell>{children}</AppShell>
+      <ChatProvider>
+        <AppShell>{children}</AppShell>
+      </ChatProvider>
     </AppProvider>
   );
 }
@@ -61,7 +66,8 @@ function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Notifications */}
+          {/* Chat + Notifications */}
+          <ChatHeaderButton />
           <NotificationBell />
 
           {/* User info */}
@@ -112,6 +118,9 @@ function AppShell({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         </main>
+
+        {/* Chat Drawer */}
+        <ChatDrawer />
       </div>
 
       {/* Footer */}

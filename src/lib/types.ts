@@ -906,7 +906,8 @@ export type NotificationType =
   | "marketplace_offer"
   | "credential_alert"
   | "ehr_event"
-  | "system";
+  | "system"
+  | "message";
 
 export interface AppNotification {
   id: string;
