@@ -1,26 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-background: #f4f4f4;
+  --color-foreground: #171717;
+  --color-brand: #17CB6C;
+  --color-brand-light: #3de88a;
+  --color-brand-lightest: #e6faf0;
+  --color-brand-dark: #12a557;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f4f4;
+  --color-border: #dfdfdf;
+  --color-text-primary: #171717;
+  --color-text-secondary: #4a4a4a;
+  --color-text-muted: #94a3b8;
+  --color-success: #17CB6C;
+  --color-success-light: #e6faf0;
+  --color-warning: #d97706;
+  --color-warning-light: #fef3c7;
+  --color-danger: #dc2626;
+  --color-danger-light: #fee2e2;
+  --color-accent: #1e40af;
+  --color-accent-light: #3b82f6;
+  --color-accent-lightest: #dbeafe;
+  --color-info: #2563eb;
+  --color-info-light: #dbeafe;
+  --color-purple: #7c3aed;
+  --color-purple-light: #ede9fe;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
